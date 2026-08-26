@@ -1,20 +1,35 @@
 import React from 'react';
+import { BreakingTicker } from '@/components/home/BreakingTicker';
+import { HeroGrid } from '@/components/home/HeroGrid';
 
 export default function Home() {
   return (
-    <main className="min-h-screen bg-brand-light text-brand-dark flex flex-col items-center justify-center p-24">
-      <h1 className="text-6xl font-serif font-bold tracking-tight mb-4">
-        Oriental Times
-      </h1>
-      <p className="text-xl font-sans text-brand-subtle max-w-2xl text-center">
-        A premium Nigerian digital newsroom that feels like a modern editorial publication.
-      </p>
-      
-      <div className="mt-12 flex items-center space-x-4 border-t border-brand-subtle/20 pt-8 w-full max-w-2xl">
-         <span className="text-sm font-bold tracking-widest uppercase">Breaking</span>
-         <span className="w-2 h-2 rounded-full bg-brand-accent animate-pulse"></span>
-         <p className="text-sm">Oriental Times Enters a New Digital Era.</p>
-      </div>
-    </main>
+    <>
+      <BreakingTicker />
+      <main className="min-h-screen bg-brand-light text-brand-dark">
+        <HeroGrid />
+        
+        {/* Latest News & Sections will go here */}
+        <section className="container mx-auto px-4 py-8">
+          <div className="border-t-2 border-brand-dark pt-4 mb-8">
+            <h3 className="text-2xl font-serif font-bold uppercase tracking-tight">Latest News</h3>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {[1, 2, 3, 4].map((i) => (
+              <div key={i} className="flex flex-col group cursor-pointer">
+                <div className="aspect-[4/3] bg-brand-subtle/20 mb-4 overflow-hidden rounded-sm">
+                  <div className="w-full h-full bg-brand-subtle/30 group-hover:scale-105 transition-transform duration-500" />
+                </div>
+                <span className="text-brand-accent text-xs font-bold uppercase tracking-wider mb-2">Technology</span>
+                <h4 className="text-lg font-serif font-bold leading-tight group-hover:text-brand-subtle transition-colors">
+                  New Policy Shifts Digital Identity Registration Deadline
+                </h4>
+                <span className="text-xs text-brand-subtle mt-2 font-sans">3 hours ago</span>
+              </div>
+            ))}
+          </div>
+        </section>
+      </main>
+    </>
   );
 }
