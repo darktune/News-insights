@@ -2,16 +2,28 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { ArrowLeft, Save, UploadCloud } from 'lucide-react';
+import { ArrowLeft, Save, UploadCloud, Loader2 } from 'lucide-react';
 import { RichTextEditor } from '@/components/ui/RichTextEditor';
+import { createArticle } from '@/app/actions/articleActions';
 
 export default function NewArticle() {
   const [title, setTitle] = useState('');
   const [excerpt, setExcerpt] = useState('');
   const [content, setContent] = useState('');
+  const [isPending, setIsPending] = useState(false);
 
   return (
-    <div className="max-w-5xl mx-auto space-y-8">
+    <form action={async (formData) => {
+      setIsPending(true);
+      formData.append('content', content);
+      try {
+        await createArticle(formData);
+      } catch (error) {
+        console.error(error);
+        alert('Failed to save article. Make sure Supabase is connected and RLS policies allow inserts.');
+        setIsPending(false);
+      }
+    }} className="max-w-5xl mx-auto space-y-8">
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-4">
           <Link href="/admin" className="p-2 hover:bg-gray-200 rounded-full transition-colors text-gray-500">
@@ -20,11 +32,11 @@ export default function NewArticle() {
           <h1 className="text-3xl font-serif font-bold text-gray-900">Create Article</h1>
         </div>
         <div className="flex items-center space-x-3">
-          <button className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 transition-colors shadow-sm">
+          <button type="submit" name="action" value="draft" disabled={isPending} className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 transition-colors shadow-sm disabled:opacity-50">
             Save Draft
           </button>
-          <button className="flex items-center space-x-2 bg-brand-accent text-white px-4 py-2 rounded-md hover:bg-brand-accent/90 transition-colors shadow-sm">
-            <Save className="w-4 h-4" />
+          <button type="submit" name="action" value="publish" disabled={isPending} className="flex items-center space-x-2 bg-brand-accent text-white px-4 py-2 rounded-md hover:bg-brand-accent/90 transition-colors shadow-sm disabled:opacity-50">
+            {isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
             <span className="font-medium text-sm">Publish</span>
           </button>
         </div>
@@ -35,6 +47,7 @@ export default function NewArticle() {
           <div className="space-y-2">
             <label className="block text-sm font-medium text-gray-700">Headline</label>
             <input 
+              name="title"
               type="text" 
               value={title}
               onChange={(e) => setTitle(e.target.value)}
@@ -46,6 +59,7 @@ export default function NewArticle() {
           <div className="space-y-2">
             <label className="block text-sm font-medium text-gray-700">Excerpt</label>
             <textarea 
+              name="excerpt"
               value={excerpt}
               onChange={(e) => setExcerpt(e.target.value)}
               placeholder="Brief summary for the homepage and SEO..."
@@ -67,7 +81,7 @@ export default function NewArticle() {
             
             <div className="space-y-2">
               <label className="block text-sm font-medium text-gray-700">Category</label>
-              <select className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-brand-accent shadow-sm">
+              <select name="category" className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-brand-accent shadow-sm">
                 <option value="">Select a category</option>
                 <option value="politics">Politics</option>
                 <option value="business">Business</option>
@@ -77,13 +91,13 @@ export default function NewArticle() {
 
             <div className="space-y-2">
               <label className="block text-sm font-medium text-gray-700">Author</label>
-              <select className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-brand-accent shadow-sm">
+              <select name="author" className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-brand-accent shadow-sm">
                 <option value="user_id">Adeola Omoniyi</option>
               </select>
             </div>
             
             <div className="flex items-center space-x-2 pt-2">
-               <input type="checkbox" id="is_breaking" className="rounded text-brand-accent focus:ring-brand-accent w-4 h-4" />
+               <input type="checkbox" name="isBreaking" value="true" id="is_breaking" className="rounded text-brand-accent focus:ring-brand-accent w-4 h-4" />
                <label htmlFor="is_breaking" className="text-sm text-gray-700 font-medium">Mark as Breaking News</label>
             </div>
           </div>
@@ -98,6 +112,6 @@ export default function NewArticle() {
           </div>
         </div>
       </div>
-    </div>
+    </form>
   );
 }
