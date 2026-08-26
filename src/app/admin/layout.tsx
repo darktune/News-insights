@@ -1,6 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
-import { LayoutDashboard, FileText, Settings, LogOut, Image as ImageIcon } from 'lucide-react';
+import { LayoutDashboard, FileText, Settings, LogOut, Image as ImageIcon, LayoutTemplate } from 'lucide-react';
 
 export default function AdminLayout({
   children,
@@ -22,6 +22,10 @@ export default function AdminLayout({
           <Link href="/admin" className="flex items-center space-x-3 px-4 py-3 rounded-md hover:bg-white/10 transition-colors">
             <LayoutDashboard className="w-5 h-5" />
             <span className="font-medium text-sm">Dashboard</span>
+          </Link>
+          <Link href="/admin/homepage" className="flex items-center space-x-3 px-4 py-3 rounded-md hover:bg-white/10 transition-colors">
+            <LayoutTemplate className="w-5 h-5" />
+            <span className="font-medium text-sm">Homepage</span>
           </Link>
           <Link href="/admin/articles" className="flex items-center space-x-3 px-4 py-3 rounded-md hover:bg-white/10 transition-colors">
             <FileText className="w-5 h-5" />
