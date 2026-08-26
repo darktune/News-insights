@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { Facebook, Twitter, Linkedin, Share2, MessageSquare, Bookmark } from 'lucide-react';
 import { notFound } from 'next/navigation';
 import { createClient } from '@supabase/supabase-js';
+import { EngagementBar } from '@/components/article/EngagementBar';
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
 const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
@@ -73,27 +74,12 @@ export default async function ArticlePage({ params }: { params: { slug: string }
           </figure>
         )}
 
-        <div className="max-w-5xl mx-auto flex flex-col lg:flex-row gap-12 relative">
-          {/* Sticky Social Share (Desktop) */}
-          <aside className="hidden lg:flex flex-col space-y-4 w-12 sticky top-24 h-fit">
-            <button className="w-10 h-10 rounded-full bg-white border border-gray-200 flex items-center justify-center text-gray-500 hover:text-[#1DA1F2] hover:border-[#1DA1F2] transition-colors shadow-sm">
-              <Twitter className="w-4 h-4" />
-            </button>
-            <button className="w-10 h-10 rounded-full bg-white border border-gray-200 flex items-center justify-center text-gray-500 hover:text-[#4267B2] hover:border-[#4267B2] transition-colors shadow-sm">
-              <Facebook className="w-4 h-4" />
-            </button>
-            <button className="w-10 h-10 rounded-full bg-white border border-gray-200 flex items-center justify-center text-gray-500 hover:text-[#0A66C2] hover:border-[#0A66C2] transition-colors shadow-sm">
-              <Linkedin className="w-4 h-4" />
-            </button>
-            <div className="w-10 h-px bg-gray-200 my-2"></div>
-            <button className="w-10 h-10 rounded-full bg-white border border-gray-200 flex items-center justify-center text-gray-500 hover:text-brand-dark hover:border-brand-dark transition-colors shadow-sm">
-              <Bookmark className="w-4 h-4" />
-            </button>
-          </aside>
+        <div className="max-w-3xl mx-auto flex flex-col relative">
+          <EngagementBar />
 
           {/* Article Body */}
           <div 
-            className="flex-1 prose prose-lg md:prose-xl font-serif text-gray-800 leading-relaxed max-w-[65ch] mx-auto lg:mx-0"
+            className="prose prose-lg md:prose-xl font-serif text-gray-800 leading-relaxed max-w-[65ch]"
             dangerouslySetInnerHTML={{ __html: article.content ? JSON.parse(article.content) : '' }}
           />
         </div>

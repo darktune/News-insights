@@ -3,6 +3,8 @@ import { Inter, Lora } from "next/font/google";
 import "./globals.css";
 
 import { Header } from "@/components/layout/Header";
+import { OnboardingProvider } from "@/components/providers/OnboardingProvider";
+import { OnboardingModal } from "@/components/ui/OnboardingModal";
 
 const inter = Inter({ subsets: ["latin"], variable: '--font-grotesk' });
 const lora = Lora({ subsets: ["latin"], variable: '--font-editorial' });
@@ -20,10 +22,13 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${inter.variable} ${lora.variable} font-sans min-h-screen bg-brand-light flex flex-col`}>
-        <Header />
-        <main className="flex-1">
-          {children}
-        </main>
+        <OnboardingProvider>
+          <Header />
+          <main className="flex-1">
+            {children}
+          </main>
+          <OnboardingModal />
+        </OnboardingProvider>
       </body>
     </html>
   );
