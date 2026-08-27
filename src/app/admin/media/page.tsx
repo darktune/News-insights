@@ -28,7 +28,11 @@ export default function MediaLibrary() {
           publicUrl
         };
       });
-      setImages(imagesWithUrls.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()));
+      setImages(imagesWithUrls.sort((a, b) => {
+        const dateA = a.created_at ? new Date(a.created_at).getTime() : 0;
+        const dateB = b.created_at ? new Date(b.created_at).getTime() : 0;
+        return dateB - dateA;
+      }));
     }
     setIsLoading(false);
   };
