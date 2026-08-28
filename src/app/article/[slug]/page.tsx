@@ -4,6 +4,7 @@ import { Facebook, Twitter, Linkedin, Share2, MessageSquare, Bookmark } from 'lu
 import { notFound } from 'next/navigation';
 import { createClient } from '@supabase/supabase-js';
 import { EngagementBar } from '@/components/article/EngagementBar';
+import { Comments } from '@/components/article/Comments';
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
 const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
@@ -75,13 +76,19 @@ export default async function ArticlePage({ params }: { params: { slug: string }
         )}
 
         <div className="max-w-3xl mx-auto flex flex-col relative">
-          <EngagementBar />
-
           {/* Article Body */}
           <div 
             className="prose prose-lg md:prose-xl font-serif text-gray-800 leading-relaxed max-w-[65ch]"
             dangerouslySetInnerHTML={{ __html: article.content ? JSON.parse(article.content) : '' }}
           />
+          
+          {/* Social Engagement */}
+          <div className="mt-12">
+            <EngagementBar />
+          </div>
+
+          {/* Comments Section */}
+          <Comments articleId={article.id} />
         </div>
       </div>
     </article>

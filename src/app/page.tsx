@@ -3,6 +3,9 @@ import Link from 'next/link';
 import { BreakingTicker } from '@/components/home/BreakingTicker';
 import { HeroGrid } from '@/components/home/HeroGrid';
 import { getLatestArticles } from '@/app/actions/articleActions';
+import { NewsletterForm } from '@/components/ui/NewsletterForm';
+
+export const revalidate = 60;
 
 export default async function Home() {
   const latestArticles = await getLatestArticles();
@@ -47,6 +50,10 @@ export default async function Home() {
             )}
           </div>
         </section>
+        {/* Newsletter Section */}
+        <div className="mt-20">
+          <NewsletterForm />
+        </div>
       </main>
     </>
   );
