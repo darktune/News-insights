@@ -35,9 +35,9 @@ function mapToCard(article: any) {
     shares: 0,
     isFeatured: false,
     featured: false,
-    status: "published" as const,
+    status: "published",
     tags: []
-  };
+  } as any;
 }
 
 export default async function Home() {
