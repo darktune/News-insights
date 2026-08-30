@@ -16,7 +16,8 @@ function mapToCard(article: any) {
     slug: article.slug,
     title: article.title,
     excerpt: article.excerpt || article.content?.substring(0, 150) || "Read more about this story...",
-    content: "",
+    content: article.content || "",
+    body: article.content || "",
     category: article.categories?.name || 'News',
     coverImage: article.featured_image_url || '/placeholder.jpg',
     publishedAt: article.created_at,
@@ -24,12 +25,18 @@ function mapToCard(article: any) {
     author: {
       id: "admin",
       name: "Achihi Media",
-      avatar: "https://i.pravatar.cc/150?u=achihi"
+      avatar: "https://i.pravatar.cc/150?u=achihi",
+      bio: "Achihi Media Editorial",
+      role: "admin",
+      articlesCount: 1
     },
     likes: 0,
     comments: 0,
     shares: 0,
-    isFeatured: false
+    isFeatured: false,
+    featured: false,
+    status: "published" as const,
+    tags: []
   };
 }
 
