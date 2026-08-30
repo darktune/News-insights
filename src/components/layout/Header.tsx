@@ -20,7 +20,7 @@ export function Header() {
         {/* Center: Logo */}
         <Link href="/" className="flex-1 flex justify-center">
           <span className="font-serif font-bold text-2xl tracking-tighter uppercase whitespace-nowrap">
-            Oriental Times
+            Achihi Media
           </span>
         </Link>
 

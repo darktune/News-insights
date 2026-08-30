@@ -8,6 +8,7 @@ import { OnboardingProvider } from "@/components/providers/OnboardingProvider";
 import { OnboardingModal } from "@/components/ui/OnboardingModal";
 
 export const metadata: Metadata = {
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://achihimedia.com'),
   title: {
     default: "ACHIHI Media — Nigeria's Modern News Platform",
     template: "%s | ACHIHI Media",
