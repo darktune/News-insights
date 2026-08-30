@@ -1,11 +1,8 @@
 import type { Metadata } from "next";
 import "./globals.css";
-
 import Providers from "@/components/Providers";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { OnboardingProvider } from "@/components/providers/OnboardingProvider";
-import { OnboardingModal } from "@/components/ui/OnboardingModal";
 
 export const metadata: Metadata = {
   title: {
@@ -35,22 +32,17 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+}: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en" suppressHydrationWarning>
       <head />
-      <body className="min-h-screen flex flex-col antialiased bg-[var(--bg)] text-[var(--text)] transition-colors duration-200">
+      <body className="min-h-screen flex flex-col antialiased">
         <Providers>
-          <OnboardingProvider>
-            <Navbar />
-            <main className="flex-1">
-              {children}
-            </main>
-            <Footer />
-            <OnboardingModal />
-          </OnboardingProvider>
+          <Navbar />
+          <main className="flex-1">
+            {children}
+          </main>
+          <Footer />
         </Providers>
       </body>
     </html>

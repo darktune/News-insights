@@ -1,0 +1,208 @@
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+
+/* ─────────────────────────────────────────────
+   ACHIHI Media — X/Twitter-style design system
+   ───────────────────────────────────────────── */
+
+/* ── Light theme ── */
+:root {
+  --bg:           #FFFFFF;
+  --bg-secondary: #F7F9FA;
+  --bg-hover:     #F7F9FA;
+  --surface:      #FFFFFF;
+  --border:       rgba(0,0,0,0.08);
+  --text:         #0F1419;
+  --text-secondary: #536471;
+  --text-tertiary:  #8B98A5;
+  --accent:       #1D9BF0;
+  --accent-hover: #1A8CD8;
+  --accent-green: #00BA7C;
+  --accent-green-hover: #00A06A;
+  --tag-bg:       #EFF9FF;
+  --tag-text:     #1D9BF0;
+  /* X-style shadow — dark on light */
+  --shadow-card:  0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06);
+  --shadow-hover: 0 4px 16px rgba(0,0,0,0.10), 0 1px 4px rgba(0,0,0,0.06);
+  --shadow-nav:   0 1px 0 rgba(0,0,0,0.08);
+}
+
+/* ── Dark theme (pure black, X/Twitter style) ── */
+.dark {
+  --bg:           #000000;
+  --bg-secondary: #0A0A0A;
+  --bg-hover:     #111111;
+  --surface:      #0A0A0A;
+  --border:       rgba(255,255,255,0.10);
+  --text:         #F1F1F1;
+  --text-secondary: #8B98A5;
+  --text-tertiary:  #536471;
+  --accent:       #1D9BF0;
+  --accent-hover: #1A8CD8;
+  --accent-green: #00BA7C;
+  --accent-green-hover: #00A06A;
+  --tag-bg:       #031018;
+  --tag-text:     #1D9BF0;
+  /* X-style shadow — light hairline on black */
+  --shadow-card:  0 0 0 1px rgba(255,255,255,0.08);
+  --shadow-hover: 0 0 0 1px rgba(255,255,255,0.14), 0 4px 24px rgba(255,255,255,0.04);
+  --shadow-nav:   0 1px 0 rgba(255,255,255,0.08);
+}
+
+/* ── Reset & base ── */
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+
+body {
+  background-color: var(--bg);
+  color: var(--text);
+  /* X/Twitter font stack */
+  font-family: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+/* ── Scrollbar ── */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.15); border-radius: 3px; }
+.dark ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.12); }
+
+/* ── Card / panel elevation (shadow via CSS var) ── */
+.x-card {
+  background: var(--surface);
+  box-shadow: var(--shadow-card);
+  transition: box-shadow 0.15s ease, transform 0.15s ease;
+  border-radius: 16px;
+  overflow: hidden;
+}
+.x-card:hover {
+  box-shadow: var(--shadow-hover);
+}
+.x-card-lift:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-hover);
+}
+
+/* ── Feed post row (X-style full-bleed row, no card border) ── */
+.feed-row {
+  border-bottom: 1px solid var(--border);
+  transition: background-color 0.1s ease;
+}
+.feed-row:hover {
+  background-color: var(--bg-hover);
+}
+
+/* ── Pill button ── */
+.btn-primary {
+  display: inline-flex; align-items: center; gap: 0.375rem;
+  padding: 0.5rem 1.25rem;
+  border-radius: 9999px;
+  background: var(--accent);
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.9375rem;
+  transition: background 0.15s ease, transform 0.1s ease;
+  border: none; cursor: pointer;
+}
+.btn-primary:hover { background: var(--accent-hover); transform: scale(1.02); }
+
+.btn-secondary {
+  display: inline-flex; align-items: center; gap: 0.375rem;
+  padding: 0.5rem 1.25rem;
+  border-radius: 9999px;
+  background: transparent;
+  color: var(--text);
+  font-weight: 700;
+  font-size: 0.9375rem;
+  border: 1.5px solid var(--border);
+  transition: background 0.15s ease;
+  cursor: pointer;
+}
+.btn-secondary:hover { background: var(--bg-hover); }
+
+.btn-green {
+  display: inline-flex; align-items: center; gap: 0.375rem;
+  padding: 0.5rem 1.25rem;
+  border-radius: 9999px;
+  background: var(--accent-green);
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.9375rem;
+  border: none; cursor: pointer;
+  transition: background 0.15s ease;
+}
+.btn-green:hover { background: var(--accent-green-hover); }
+
+/* ── Like pulse animation ── */
+@keyframes like-pulse {
+  0%   { transform: scale(1); }
+  40%  { transform: scale(1.4); }
+  100% { transform: scale(1); }
+}
+.like-animate { animation: like-pulse 0.25s ease; }
+
+/* ── Breaking news ticker ── */
+@keyframes ticker {
+  0%   { transform: translateX(100%); }
+  100% { transform: translateX(-100%); }
+}
+.ticker-text {
+  animation: ticker 24s linear infinite;
+  white-space: nowrap;
+}
+
+/* ── Ad slot ── */
+.ad-slot {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+/* ── TipTap editor ── */
+.ProseMirror {
+  outline: none;
+  min-height: 300px;
+  padding: 1rem;
+  color: var(--text);
+}
+.ProseMirror p.is-editor-empty:first-child::before {
+  content: attr(data-placeholder);
+  float: left;
+  color: var(--text-tertiary);
+  pointer-events: none;
+  height: 0;
+}
+.ProseMirror h1 { font-size: 2rem; font-weight: 800; margin: 1.5rem 0 0.75rem; color: var(--text); }
+.ProseMirror h2 { font-size: 1.5rem; font-weight: 700; margin: 1.25rem 0 0.5rem; color: var(--text); }
+.ProseMirror h3 { font-size: 1.25rem; font-weight: 600; margin: 1rem 0 0.5rem; color: var(--text); }
+.ProseMirror p  { margin: 0.75rem 0; line-height: 1.75; color: var(--text); }
+.ProseMirror blockquote {
+  border-left: 3px solid var(--accent);
+  padding-left: 1rem;
+  margin: 1.5rem 0;
+  font-style: italic;
+  color: var(--text-secondary);
+}
+.ProseMirror ul, .ProseMirror ol { padding-left: 1.5rem; margin: 0.75rem 0; }
+.ProseMirror li { margin: 0.25rem 0; color: var(--text); }
+.ProseMirror a { color: var(--accent); text-decoration: underline; }
+.ProseMirror img { max-width: 100%; border-radius: 0.75rem; margin: 1rem 0; }
+.ProseMirror strong { font-weight: 700; color: var(--text); }
+.ProseMirror em { font-style: italic; }
+.ProseMirror code {
+  background: var(--tag-bg);
+  color: var(--accent);
+  padding: 0.125rem 0.375rem;
+  border-radius: 0.25rem;
+  font-size: 0.875rem;
+}
+.ProseMirror pre {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 0.75rem;
+  padding: 1rem;
+  overflow-x: auto;
+  margin: 1rem 0;
+}
