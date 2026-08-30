@@ -18,10 +18,10 @@ function mapToCard(article: any) {
     excerpt: article.excerpt || article.content?.substring(0, 150) || "Read more about this story...",
     content: article.content || "",
     body: article.content || "",
-    category: article.categories?.name || 'News',
+    category: article.categories?.name || 'National',
     coverImage: article.featured_image_url || '/placeholder.jpg',
     publishedAt: article.created_at,
-    readTime: 5, // mock or calculate based on content length
+    readTime: 5,
     author: {
       id: "admin",
       name: "Achihi Media",
