@@ -17,19 +17,25 @@
     --text:         #0F1419;
     --text-secondary: #536471;
     --text-tertiary:  #8B98A5;
-    --accent:       #1D9BF0;
-    --accent-hover: #1A8CD8;
+    --accent:       #000000; /* Shifted to luxury minimalist accent (black on light) */
+    --accent-hover: #333333;
     --accent-green: #00BA7C;
     --accent-green-hover: #00A06A;
-    --tag-bg:       #EFF9FF;
-    --tag-text:     #1D9BF0;
+    --tag-bg:       #F7F9FA;
+    --tag-text:     #0F1419;
+    
+    /* iOS 26 Glassmorphism (Light) */
+    --glass-bg: rgba(255, 255, 255, 0.75);
+    --glass-border: rgba(0, 0, 0, 0.05);
+    --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.04);
+    
     /* X-style shadow — dark on light */
     --shadow-card:  0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06);
     --shadow-hover: 0 4px 16px rgba(0,0,0,0.10), 0 1px 4px rgba(0,0,0,0.06);
     --shadow-nav:   0 1px 0 rgba(0,0,0,0.08);
   }
 
-  /* ── Dark theme (pure black, X/Twitter style) ── */
+  /* ── Dark theme (pure black) ── */
   .dark {
     --bg:           #000000;
     --bg-secondary: #0A0A0A;
@@ -39,12 +45,18 @@
     --text:         #F1F1F1;
     --text-secondary: #8B98A5;
     --text-tertiary:  #536471;
-    --accent:       #1D9BF0;
-    --accent-hover: #1A8CD8;
+    --accent:       #FFFFFF; /* White on black for luxury contrast */
+    --accent-hover: #CCCCCC;
     --accent-green: #00BA7C;
     --accent-green-hover: #00A06A;
-    --tag-bg:       #031018;
-    --tag-text:     #1D9BF0;
+    --tag-bg:       #111111;
+    --tag-text:     #F1F1F1;
+    
+    /* iOS 26 Glassmorphism (Dark) */
+    --glass-bg: rgba(10, 10, 10, 0.75);
+    --glass-border: rgba(255, 255, 255, 0.08);
+    --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+
     /* X-style shadow — light hairline on black */
     --shadow-card:  0 0 0 1px rgba(255,255,255,0.08);
     --shadow-hover: 0 0 0 1px rgba(255,255,255,0.14), 0 4px 24px rgba(255,255,255,0.04);
@@ -65,6 +77,15 @@
 }
 
 @layer components {
+  /* ── iOS 26 Glassmorphism Panel ── */
+  .glass-panel {
+    background: var(--glass-bg);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--glass-shadow);
+  }
+
   /* ── Scrollbar ── */
   ::-webkit-scrollbar { width: 5px; height: 5px; }
   ::-webkit-scrollbar-track { background: transparent; }

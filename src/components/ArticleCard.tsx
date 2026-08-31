@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { Heart, MessageCircle, Share2, Bookmark, Clock } from "lucide-react";
+import { Heart, MessageCircle, Share2, Bookmark, Clock, MoreHorizontal, ThumbsDown, Flag } from "lucide-react";
 import { Article } from "@/lib/mock-data";
 import { timeAgo, formatNumber, categoryColor } from "@/lib/utils";
 import { useAppStore } from "@/lib/store";
@@ -39,18 +39,24 @@ function ActionBtn({
 }
 
 export default function ArticleCard({ article, variant = "default" }: ArticleCardProps) {
-  const { likedArticles, savedArticles, toggleLike, toggleSave } = useAppStore();
+  const { likedArticles, savedArticles, hiddenArticles, toggleLike, toggleSave, hideArticle } = useAppStore();
   const [likeCount, setLikeCount] = useState(article.likes);
   const [likeAnim, setLikeAnim] = useState(false);
   const [shareToast, setShareToast] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
 
-  const isLiked = likedArticles.has(article.id);
-  const isSaved = savedArticles.has(article.id);
+  // If article is hidden, don't render it in feeds
+  if (hiddenArticles?.includes(article.id)) {
+    return null;
+  }
+
+  const isLiked = likedArticles.includes(article.id);
+  const isSaved = savedArticles.includes(article.id);
 
   const handleLike = (e: React.MouseEvent) => {
     e.preventDefault(); e.stopPropagation();
     const wasLiked = isLiked;
-    toggleLike(article.id);
+    toggleLike(article.id, article.category);
     setLikeCount((c) => wasLiked ? c - 1 : c + 1);
     setLikeAnim(true);
     setTimeout(() => setLikeAnim(false), 300);
@@ -58,7 +64,7 @@ export default function ArticleCard({ article, variant = "default" }: ArticleCar
 
   const handleSave = (e: React.MouseEvent) => {
     e.preventDefault(); e.stopPropagation();
-    toggleSave(article.id);
+    toggleSave(article.id, article.category);
   };
 
   const handleShare = (e: React.MouseEvent) => {
@@ -102,7 +108,7 @@ export default function ArticleCard({ article, variant = "default" }: ArticleCar
             </div>
             <div className="flex items-center gap-3 text-gray-300 text-sm">
               <span className="flex items-center gap-1"><Heart size={13} /> {formatNumber(article.likes)}</span>
-              <span className="flex items-center gap-1"><MessageCircle size={13} /> {formatNumber(article.comments)}</span>
+              <span className="flex items-center gap-1"><MessageCircle size={13} /> {formatNumber(article.commentsCount || 0)}</span>
             </div>
           </div>
         </div>
@@ -217,7 +223,7 @@ export default function ArticleCard({ article, variant = "default" }: ArticleCar
           />
           <Link href={`/article/${article.slug}#comments`}>
             <ActionBtn
-              count={formatNumber(article.comments)}
+              count={formatNumber(article.commentsCount || 0)}
               hoverColor="var(--accent)"
               icon={<MessageCircle size={16} strokeWidth={1.8} />}
             />
@@ -225,7 +231,7 @@ export default function ArticleCard({ article, variant = "default" }: ArticleCar
           <ActionBtn
             onClick={handleShare}
             hoverColor="var(--accent-green)"
-            count={formatNumber(article.shares)}
+            count={formatNumber(Math.floor((article.views || 0) * 0.05))}
             icon={<Share2 size={16} strokeWidth={1.8} />}
           />
           {shareToast && (
@@ -235,13 +241,41 @@ export default function ArticleCard({ article, variant = "default" }: ArticleCar
             </span>
           )}
         </div>
-        <ActionBtn
-          onClick={handleSave}
-          active={isSaved}
-          activeColor="var(--accent)"
-          hoverColor="var(--accent)"
-          icon={<Bookmark size={16} strokeWidth={1.8} fill={isSaved ? "currentColor" : "none"} />}
-        />
+        <div className="flex items-center gap-2">
+          <ActionBtn
+            onClick={handleSave}
+            active={isSaved}
+            activeColor="var(--accent)"
+            hoverColor="var(--accent)"
+            icon={<Bookmark size={16} strokeWidth={1.8} fill={isSaved ? "currentColor" : "none"} />}
+          />
+          {/* Feed Controls */}
+          <div className="relative">
+            <ActionBtn
+              onClick={(e) => { e.preventDefault(); e.stopPropagation(); setMenuOpen(!menuOpen); }}
+              icon={<MoreHorizontal size={16} strokeWidth={1.8} />}
+            />
+            {menuOpen && (
+              <div 
+                className="absolute right-0 bottom-full mb-2 w-48 glass-panel rounded-xl shadow-lg z-10 overflow-hidden"
+                onClick={(e) => { e.preventDefault(); e.stopPropagation(); }}
+              >
+                <button 
+                  onClick={() => { hideArticle(article.id, article.category, 'NOT_INTERESTED'); setMenuOpen(false); }}
+                  className="w-full text-left px-4 py-2 text-sm text-[var(--text)] hover:bg-[var(--bg-hover)] transition-colors flex items-center gap-2"
+                >
+                  <ThumbsDown size={14} /> Not interested
+                </button>
+                <button 
+                  onClick={() => { hideArticle(article.id, article.category, 'REPORT'); setMenuOpen(false); }}
+                  className="w-full text-left px-4 py-2 text-sm text-red-500 hover:bg-red-500/10 transition-colors flex items-center gap-2"
+                >
+                  <Flag size={14} /> Report
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
       </div>
     </article>
   );

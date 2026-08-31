@@ -6,7 +6,7 @@ import { usePathname } from "next/navigation";
 import { useTheme } from "next-themes";
 import {
   Sun, Moon, Search, User, Menu, X, ChevronDown,
-  PenSquare, LogOut, Settings, BookMarked,
+  PenSquare, LogOut, Settings, BookMarked, Monitor, Crown
 } from "lucide-react";
 import AchihiLogo from "./AchihiLogo";
 import { CATEGORIES } from "@/lib/mock-data";
@@ -20,7 +20,7 @@ export default function Navbar() {
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [profileOpen, setProfileOpen] = useState(false);
-  const { mobileMenuOpen, setMobileMenuOpen, isLoggedIn, currentUser, logout } = useAppStore();
+  const { mobileMenuOpen, setMobileMenuOpen, isLoggedIn, currentUser, logout, setPremiumModalOpen } = useAppStore();
 
   useEffect(() => setMounted(true), []);
   useEffect(() => {
@@ -40,219 +40,155 @@ export default function Navbar() {
       window.location.href = `/search?q=${encodeURIComponent(searchQuery.trim())}`;
   };
 
-  /* token shortcuts */
-  const navBg = scrolled ? "backdrop-blur-xl" : "";
+  const cycleTheme = () => {
+    if (theme === "system") setTheme("light");
+    else if (theme === "light") setTheme("dark");
+    else setTheme("system");
+  };
 
   return (
-    <>
-      {/* ── Breaking ticker ── */}
-      <div style={{ background: "var(--bg-secondary)", borderBottom: "1px solid var(--border)" }}
-        className="text-xs py-1.5 overflow-hidden">
-        <div className="flex items-center gap-3 max-w-7xl mx-auto px-4">
-          <span className="flex-shrink-0 px-2 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider"
-            style={{ background: "var(--accent)", color: "#fff" }}>
-            LIVE
-          </span>
-          <div className="overflow-hidden flex-1">
-            <span className="ticker-text inline-block" style={{ color: "var(--text-secondary)" }}>
-              Senate passes ₦2.4 Trillion Infrastructure Bill &nbsp;·&nbsp;
-              Super Eagles thrash Ghana 3-0 &nbsp;·&nbsp;
-              Nigerian artist breaks Spotify streaming record &nbsp;·&nbsp;
-              Naira strengthens to ₦1,450 per dollar &nbsp;·&nbsp;
-              D&apos;Tigress retain AfroBasket title &nbsp;·&nbsp;
-              Lagos flooding displaces 12,000 residents &nbsp;·&nbsp;
-            </span>
+    <header
+      className={`sticky top-0 z-50 transition-all duration-200 ${scrolled ? 'glass-panel border-b-0' : 'bg-[var(--bg)] border-b border-[var(--border)]'}`}
+    >
+      <div className="max-w-7xl mx-auto px-4 sm:px-6">
+        <div className="flex items-center h-16 gap-3">
+
+          {/* Logo */}
+          <Link href="/" className="flex-shrink-0 mr-4">
+            <AchihiLogo size={36} />
+          </Link>
+
+          {/* Category nav — desktop */}
+          <nav className="hidden lg:flex items-center gap-0.5 flex-1">
+            {CATEGORIES.map((cat) => {
+              const active = pathname === `/category/${cat.toLowerCase()}`;
+              return (
+                <Link key={cat} href={`/category/${cat.toLowerCase()}`}
+                  className={`relative px-4 py-2 rounded-full text-sm font-semibold transition-all duration-150 ${active ? 'text-[var(--accent)] bg-[var(--bg-hover)]' : 'text-[var(--text-secondary)] hover:bg-[var(--bg-hover)] hover:text-[var(--text)]'}`}>
+                  {cat}
+                </Link>
+              );
+            })}
+          </nav>
+
+          {/* Right side actions */}
+          <div className="flex items-center gap-2 ml-auto">
+
+            {/* Search */}
+            {searchOpen ? (
+              <form onSubmit={handleSearch} className="flex items-center gap-1">
+                <input autoFocus type="text" value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder="Search..."
+                  className="w-44 sm:w-56 px-4 py-2 text-sm rounded-full outline-none transition-all bg-[var(--bg-secondary)] border border-[var(--accent)] text-[var(--text)]"
+                />
+                <button type="button" onClick={() => setSearchOpen(false)}
+                  className="p-2 rounded-full text-[var(--text-secondary)] hover:bg-[var(--bg-hover)] hover:text-[var(--text)] transition-all">
+                  <X size={18} />
+                </button>
+              </form>
+            ) : (
+              <button onClick={() => setSearchOpen(true)}
+                className="p-2 rounded-full text-[var(--text-secondary)] hover:bg-[var(--bg-hover)] hover:text-[var(--text)] transition-all"
+                aria-label="Search">
+                <Search size={20} strokeWidth={1.8} />
+              </button>
+            )}
+
+            {/* Theme toggle */}
+            {mounted && (
+              <button
+                onClick={cycleTheme}
+                className="p-2 rounded-full text-[var(--text-secondary)] hover:bg-[var(--bg-hover)] hover:text-[var(--text)] transition-all"
+                aria-label="Toggle theme">
+                {theme === "light" && <Sun size={20} strokeWidth={1.8} />}
+                {theme === "dark" && <Moon size={20} strokeWidth={1.8} />}
+                {theme === "system" && <Monitor size={20} strokeWidth={1.8} />}
+              </button>
+            )}
+
+            {/* Premium / Auth */}
+            <button 
+              onClick={() => setPremiumModalOpen(true)}
+              className="hidden sm:flex items-center gap-1.5 px-4 py-2 rounded-full bg-[var(--accent)] text-[var(--bg)] font-bold text-xs uppercase tracking-wider hover:opacity-80 transition-opacity ml-2"
+            >
+              <Crown size={14} /> Premium
+            </button>
+
+            {isLoggedIn && currentUser ? (
+              <div className="relative ml-2">
+                <button onClick={() => setProfileOpen(!profileOpen)}
+                  className="flex items-center gap-1.5 px-2 py-1 rounded-full border border-[var(--border)] hover:bg-[var(--bg-hover)] transition-all">
+                  <img src={currentUser.avatar} alt={currentUser.name}
+                    className="w-7 h-7 rounded-full object-cover" />
+                  <ChevronDown size={14} className="text-[var(--text-secondary)]" />
+                </button>
+
+                {profileOpen && (
+                  <div className="absolute right-0 mt-3 w-56 rounded-2xl overflow-hidden z-50 glass-panel">
+                    <div className="px-4 py-4 border-b border-[var(--border)]">
+                      <p className="text-sm font-bold truncate text-[var(--text)]">{currentUser.name}</p>
+                      <p className="text-xs capitalize text-[var(--text-tertiary)] mt-1">{currentUser.role}</p>
+                    </div>
+                    <div className="py-2">
+                      {[
+                        { href: "/coming-soon", Icon: User, label: "My Profile" },
+                        { href: "/coming-soon", Icon: BookMarked, label: "Saved Collections" },
+                      ].map(({ href, Icon, label }) => (
+                        <Link key={label} href={href}
+                          className="flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-[var(--text)] hover:bg-[var(--bg-hover)] transition-colors">
+                          <Icon size={16} className="text-[var(--text-tertiary)]" /> {label}
+                        </Link>
+                      ))}
+                      <div className="my-2 border-t border-[var(--border)]" />
+                      <button onClick={logout}
+                        className="flex items-center gap-3 w-full px-4 py-2.5 text-sm font-medium text-red-500 hover:bg-[var(--bg-hover)] transition-colors">
+                        <LogOut size={16} /> Sign Out
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <Link href="/coming-soon"
+                className="hidden sm:inline-flex items-center justify-center text-sm font-bold text-[var(--text)] ml-2 py-2 px-4 rounded-full border border-[var(--border)] hover:bg-[var(--bg-hover)] transition-colors">
+                Sign In
+              </Link>
+            )}
+
+            {/* Mobile hamburger */}
+            <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="lg:hidden p-2 rounded-full text-[var(--text-secondary)] hover:bg-[var(--bg-hover)] transition-all ml-1"
+              aria-label="Menu">
+              {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+            </button>
           </div>
         </div>
       </div>
 
-      {/* ── Main nav ── */}
-      <header
-        className={`sticky top-0 z-50 ${navBg} transition-all duration-200`}
-        style={{
-          background: scrolled ? "rgba(var(--bg-rgb, 255,255,255), 0.92)" : "var(--bg)",
-          boxShadow: "var(--shadow-nav)",
-        }}
-      >
-        {/* actual bg for scroll blur */}
-        <div className="absolute inset-0 -z-10" style={{ background: "var(--bg)" }} />
-
-        <div className="max-w-7xl mx-auto px-4 sm:px-6">
-          <div className="flex items-center h-[57px] gap-3">
-
-            {/* Logo */}
-            <Link href="/" className="flex-shrink-0 mr-2">
-              <AchihiLogo size={36} />
-            </Link>
-
-            {/* Category nav — desktop */}
-            <nav className="hidden lg:flex items-center gap-0.5 flex-1">
-              {CATEGORIES.map((cat) => {
-                const active = pathname === `/category/${cat.toLowerCase()}`;
-                return (
-                  <Link key={cat} href={`/category/${cat.toLowerCase()}`}
-                    className="relative px-3 py-1.5 rounded-full text-sm font-semibold transition-all duration-150"
-                    style={{
-                      color: active ? "var(--accent)" : "var(--text-secondary)",
-                      background: active ? "color-mix(in srgb, var(--accent) 10%, transparent)" : "transparent",
-                    }}
-                    onMouseEnter={(e) => {
-                      if (!active) (e.currentTarget as HTMLElement).style.background = "var(--bg-hover)";
-                    }}
-                    onMouseLeave={(e) => {
-                      if (!active) (e.currentTarget as HTMLElement).style.background = "transparent";
-                    }}>
-                    {cat}
-                    {active && (
-                      <span className="absolute bottom-0.5 left-1/2 -translate-x-1/2 w-5 h-0.5 rounded-full"
-                        style={{ background: "var(--accent)" }} />
-                    )}
-                  </Link>
-                );
-              })}
-            </nav>
-
-            {/* Right side actions */}
-            <div className="flex items-center gap-1 ml-auto">
-
-              {/* Search */}
-              {searchOpen ? (
-                <form onSubmit={handleSearch} className="flex items-center gap-1">
-                  <input autoFocus type="text" value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    placeholder="Search stories…"
-                    className="w-44 sm:w-56 px-3 py-1.5 text-sm rounded-full outline-none transition-all"
-                    style={{
-                      background: "var(--bg-secondary)",
-                      border: "1.5px solid var(--accent)",
-                      color: "var(--text)",
-                    }} />
-                  <button type="button" onClick={() => setSearchOpen(false)}
-                    className="p-2 rounded-full transition-all"
-                    style={{ color: "var(--text-secondary)" }}>
-                    <X size={17} />
-                  </button>
-                </form>
-              ) : (
-                <button onClick={() => setSearchOpen(true)}
-                  className="p-2 rounded-full transition-all"
-                  style={{ color: "var(--text-secondary)" }}
-                  onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.background = "var(--bg-hover)"; (e.currentTarget as HTMLElement).style.color = "var(--text)"; }}
-                  onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.background = "transparent"; (e.currentTarget as HTMLElement).style.color = "var(--text-secondary)"; }}
-                  aria-label="Search">
-                  <Search size={20} strokeWidth={1.8} />
-                </button>
-              )}
-
-              {/* Theme toggle */}
-              {mounted && (
-                <button
-                  onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-                  className="p-2 rounded-full transition-all"
-                  style={{ color: "var(--text-secondary)" }}
-                  onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.background = "var(--bg-hover)"; (e.currentTarget as HTMLElement).style.color = "var(--text)"; }}
-                  onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.background = "transparent"; (e.currentTarget as HTMLElement).style.color = "var(--text-secondary)"; }}
-                  aria-label="Toggle theme">
-                  {theme === "dark" ? <Sun size={20} strokeWidth={1.8} /> : <Moon size={20} strokeWidth={1.8} />}
-                </button>
-              )}
-
-              {/* Auth */}
-              {isLoggedIn && currentUser ? (
-                <div className="relative ml-1">
-                  <button onClick={() => setProfileOpen(!profileOpen)}
-                    className="flex items-center gap-1.5 px-2 py-1 rounded-full transition-all"
-                    style={{ border: "1.5px solid var(--border)" }}
-                    onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.background = "var(--bg-hover)"; }}
-                    onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.background = "transparent"; }}>
-                    <img src={currentUser.avatar} alt={currentUser.name}
-                      className="w-7 h-7 rounded-full object-cover" />
-                    <ChevronDown size={13} style={{ color: "var(--text-secondary)" }} />
-                  </button>
-
-                  {profileOpen && (
-                    <div className="absolute right-0 mt-2 w-52 rounded-2xl overflow-hidden z-50"
-                      style={{ background: "var(--bg)", boxShadow: "0 8px 32px rgba(0,0,0,0.16), 0 0 0 1px var(--border)" }}>
-                      <div className="px-4 py-3" style={{ borderBottom: "1px solid var(--border)" }}>
-                        <p className="text-sm font-bold truncate" style={{ color: "var(--text)" }}>{currentUser.name}</p>
-                        <p className="text-xs capitalize" style={{ color: "var(--text-tertiary)" }}>{currentUser.role}</p>
-                      </div>
-                      <div className="py-1">
-                        {[
-                          { href: "/profile", Icon: User, label: "My Profile" },
-                          { href: "/profile?tab=saved", Icon: BookMarked, label: "Saved Articles" },
-                          ...(currentUser.role === "contributor" || currentUser.role === "admin"
-                            ? [{ href: "/submit", Icon: PenSquare, label: "Write Article" }] : []),
-                          ...(currentUser.role === "admin"
-                            ? [{ href: "/admin", Icon: Settings, label: "Admin Panel" }] : []),
-                        ].map(({ href, Icon, label }) => (
-                          <Link key={label} href={href}
-                            className="flex items-center gap-2.5 px-4 py-2.5 text-sm font-medium transition-all"
-                            style={{ color: "var(--text)" }}
-                            onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.background = "var(--bg-hover)"; }}
-                            onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.background = "transparent"; }}>
-                            <Icon size={15} style={{ color: "var(--text-tertiary)" }} /> {label}
-                          </Link>
-                        ))}
-                        <div style={{ borderTop: "1px solid var(--border)", margin: "4px 0" }} />
-                        <button onClick={logout}
-                          className="flex items-center gap-2.5 w-full px-4 py-2.5 text-sm font-medium text-red-500 transition-all"
-                          onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.background = "var(--bg-hover)"; }}
-                          onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.background = "transparent"; }}>
-                          <LogOut size={15} /> Sign Out
-                        </button>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              ) : (
-                <Link href="/login"
-                  className="btn-primary hidden sm:inline-flex text-sm ml-1 py-1.5 px-4">
-                  Sign In
+      {/* Mobile menu */}
+      {mobileMenuOpen && (
+        <div className="lg:hidden pb-4 border-t border-[var(--border)] glass-panel rounded-b-2xl shadow-xl absolute w-full left-0">
+          <nav className="px-4 pt-4 grid grid-cols-2 gap-2">
+            {CATEGORIES.map((cat) => {
+              const active = pathname === `/category/${cat.toLowerCase()}`;
+              return (
+                <Link key={cat} href={`/category/${cat.toLowerCase()}`}
+                  className={`px-4 py-3 rounded-xl text-sm font-semibold text-center transition-all ${active ? 'text-[var(--accent)] bg-[var(--bg-hover)]' : 'text-[var(--text-secondary)] bg-[var(--bg-secondary)]'}`}>
+                  {cat}
                 </Link>
-              )}
-
-              {/* Mobile hamburger */}
-              <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                className="lg:hidden p-2 rounded-full transition-all ml-1"
-                style={{ color: "var(--text-secondary)" }}
-                onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.background = "var(--bg-hover)"; }}
-                onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.background = "transparent"; }}
-                aria-label="Menu">
-                {mobileMenuOpen ? <X size={21} /> : <Menu size={21} />}
-              </button>
+              );
+            })}
+          </nav>
+          {!isLoggedIn && (
+            <div className="px-4 pt-4 mt-2 border-t border-[var(--border)]">
+              <Link href="/coming-soon" className="w-full flex items-center justify-center text-sm font-bold text-[var(--text)] py-3 rounded-xl border border-[var(--border)] hover:bg-[var(--bg-hover)] transition-colors">
+                Sign In
+              </Link>
             </div>
-          </div>
+          )}
         </div>
-
-        {/* Mobile menu */}
-        {mobileMenuOpen && (
-          <div className="lg:hidden pb-3" style={{ borderTop: "1px solid var(--border)", background: "var(--bg)" }}>
-            <nav className="px-4 pt-3 grid grid-cols-2 gap-1.5">
-              {CATEGORIES.map((cat) => {
-                const active = pathname === `/category/${cat.toLowerCase()}`;
-                return (
-                  <Link key={cat} href={`/category/${cat.toLowerCase()}`}
-                    className="px-3 py-2.5 rounded-full text-sm font-semibold text-center transition-all"
-                    style={{
-                      color: active ? "var(--accent)" : "var(--text-secondary)",
-                      background: active ? "color-mix(in srgb, var(--accent) 10%, transparent)" : "var(--bg-secondary)",
-                    }}>
-                    {cat}
-                  </Link>
-                );
-              })}
-            </nav>
-            {!isLoggedIn && (
-              <div className="px-4 pt-3">
-                <Link href="/login" className="btn-primary w-full justify-center text-sm">
-                  Sign In / Register
-                </Link>
-              </div>
-            )}
-          </div>
-        )}
-      </header>
-    </>
+      )}
+    </header>
   );
 }
