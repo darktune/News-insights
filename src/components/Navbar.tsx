@@ -153,7 +153,7 @@ export default function Navbar() {
               <Link href="/coming-soon"
                 className="hidden sm:inline-flex items-center justify-center text-sm font-bold text-[var(--text)] ml-2 py-2 px-4 rounded-full border border-[var(--border)] hover:bg-[var(--bg-hover)] transition-colors">
                 Sign In
-              </Link>
+              </button>
             )}
 
             {/* Mobile hamburger */}
