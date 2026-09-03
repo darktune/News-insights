@@ -3,25 +3,23 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
-
-const MOCK_BREAKING_NEWS = [
-  "CBN Announces New Foreign Exchange Policy Guidelines",
-  "Tech Startup 'Flutterwave' Announces Expansion into East Africa",
-  "Super Eagles Secure Qualification for Upcoming AFCON Tournament",
-];
+import { MOCK_ARTICLES } from '@/lib/mock-data';
 
 export function BreakingTicker() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
 
+  // Get the 5 most recent articles
+  const breakingNews = MOCK_ARTICLES.slice(0, 5);
+
   useEffect(() => {
     if (isPaused) return;
     
     const timer = setInterval(() => {
-      setCurrentIndex((prev) => (prev + 1) % MOCK_BREAKING_NEWS.length);
+      setCurrentIndex((prev) => (prev + 1) % breakingNews.length);
     }, 5000);
     return () => clearInterval(timer);
-  }, [isPaused]);
+  }, [isPaused, breakingNews.length]);
 
   return (
     <div className="w-full bg-[var(--bg-secondary)] border-b border-[var(--border)] py-2 overflow-hidden transition-colors">
@@ -48,8 +46,9 @@ export function BreakingTicker() {
               transition={{ duration: 0.3 }}
               className="absolute text-sm font-medium whitespace-nowrap overflow-hidden text-ellipsis w-full text-[var(--text)] hover:underline"
             >
-              <Link href="/coming-soon">
-                {MOCK_BREAKING_NEWS[currentIndex]} {isPaused && <span className="ml-2 text-[var(--text-tertiary)] text-xs">(Paused)</span>}
+              <Link href={"/article/" + breakingNews[currentIndex].slug}>
+                {breakingNews[currentIndex].title}
+                {isPaused && <span className="ml-2 text-[var(--text-tertiary)] text-xs font-bold">(Paused)</span>}
               </Link>
             </motion.p>
           </AnimatePresence>
