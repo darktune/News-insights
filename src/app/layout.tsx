@@ -13,26 +13,26 @@ import ReportModal from "@/components/ui/ReportModal";
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://achihimedia.com'),
   title: {
-    default: "ACHIHI Media — Nigeria's Modern News Platform",
-    template: "%s | ACHIHI Media",
+    default: "ACHICHI Media — Nigeria's Modern News Platform",
+    template: "%s | ACHICHI Media",
   },
   description:
-    "ACHIHI Media Limited delivers credible, timely news from across Nigeria — Politics, Business, Entertainment, Sport and more.",
-  keywords: ["Nigeria news", "Nigerian politics", "Naija news", "ACHIHI Media", "Nigerian newspaper"],
-  authors: [{ name: "ACHIHI Media Limited" }],
+    "ACHICHI Media Limited delivers credible, timely news from across Nigeria — Politics, Business, Entertainment, Sport and more.",
+  keywords: ["Nigeria news", "Nigerian politics", "Naija news", "ACHICHI Media", "Nigerian newspaper"],
+  authors: [{ name: "ACHICHI Media Limited" }],
   openGraph: {
     type: "website",
     locale: "en_NG",
     url: "https://achihimedia.com",
-    siteName: "ACHIHI Media",
-    title: "ACHIHI Media — Nigeria's Modern News Platform",
+    siteName: "ACHICHI Media",
+    title: "ACHICHI Media — Nigeria's Modern News Platform",
     description: "Credible, timely news from across Nigeria.",
     images: [{ url: "/og-image.jpg", width: 1200, height: 630 }],
   },
   twitter: {
     card: "summary_large_image",
-    site: "@achihimedia",
-    creator: "@achihimedia",
+    site: "@achichimedia",
+    creator: "@achichimedia",
   },
   robots: { index: true, follow: true },
 };

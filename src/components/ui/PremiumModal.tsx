@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { useAppStore } from '@/lib/store';
-import { X, Sparkles, Check, Radio, Headphones, ShieldCheck, Zap, Lock, CreditCard } from 'lucide-react';
+import { X, ArrowRight, Check, Radio, FileText, Shield, CheckCircle2 } from 'lucide-react';
 import AchihiLogo from '@/components/AchihiLogo';
 
 export default function PremiumModal() {
@@ -21,150 +21,168 @@ export default function PremiumModal() {
       setTimeout(() => {
         setSubscribed(false);
         setPremiumModalOpen(false);
-      }, 1500);
-    }, 800);
+      }, 1600);
+    }, 700);
   };
 
   return (
     <div className="fixed inset-0 z-[120] flex items-center justify-center p-3 sm:p-4 overflow-y-auto">
-      {/* Dimmed backdrop with deep ambient blur */}
+      {/* Background Dimmed Overlay */}
       <div 
-        className="fixed inset-0 bg-black/85 backdrop-blur-xl transition-opacity" 
+        className="fixed inset-0 bg-black/80 backdrop-blur-md transition-opacity" 
         onClick={() => setPremiumModalOpen(false)}
       />
 
-      {/* Obsidian & Gold Luxury Shell */}
-      <div className="relative w-full max-w-xl my-8 bg-zinc-950 text-white rounded-[2.5rem] shadow-[0_20px_90px_-20px_rgba(234,179,8,0.3)] border border-amber-500/30 overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+      {/* Main Modal Window — Built on Editorial Design & HCI Hierarchy */}
+      <div className="relative w-full max-w-xl my-6 bg-zinc-950 text-zinc-100 rounded-3xl shadow-2xl border border-zinc-800 overflow-hidden animate-in fade-in zoom-in-95 duration-200">
         
-        {/* Top Gold Radial Aurora Highlight */}
-        <div className="absolute top-0 left-0 right-0 h-64 bg-[radial-gradient(ellipse_70%_70%_at_50%_-20%,rgba(245,158,11,0.3),rgba(0,0,0,0))] pointer-events-none" />
-
         {/* Close Button */}
-        <div className="absolute top-4 right-4 z-20">
-          <button 
-            onClick={() => setPremiumModalOpen(false)}
-            className="w-10 h-10 rounded-full bg-white/5 border border-white/10 hover:bg-white/15 text-zinc-400 hover:text-white flex items-center justify-center transition-all"
-            aria-label="Close"
-          >
-            <X size={18} />
-          </button>
-        </div>
+        <button 
+          onClick={() => setPremiumModalOpen(false)}
+          className="absolute top-5 right-5 z-20 w-9 h-9 rounded-full bg-zinc-900 border border-zinc-800 hover:bg-zinc-800 text-zinc-400 hover:text-white flex items-center justify-center transition-colors cursor-pointer"
+          aria-label="Close"
+        >
+          <X size={17} />
+        </button>
 
-        <div className="p-6 sm:p-8 max-h-[90vh] overflow-y-auto relative z-10">
+        <div className="p-6 sm:p-8 max-h-[90vh] overflow-y-auto">
           
-          {/* Header Tag */}
-          <div className="flex items-center gap-2 mb-3">
-            <span className="px-3 py-1 rounded-full text-[10px] font-black tracking-[0.2em] uppercase bg-gradient-to-r from-amber-500/20 via-amber-400/20 to-yellow-500/20 border border-amber-400/40 text-amber-300 flex items-center gap-1.5 shadow-sm">
-              <Sparkles size={11} className="text-amber-300" />
-              ACHICHI PRIVÉ · TIER 01
-            </span>
+          {/* Brand & Kicker */}
+          <div className="flex items-center gap-3 mb-5">
+            <AchihiLogo size={32} showWordmark={false} />
+            <div className="flex items-center gap-2">
+              <span className="text-[11px] font-mono tracking-[0.25em] uppercase font-bold text-zinc-400">
+                ACHICHI ALL-ACCESS
+              </span>
+              <span className="w-1 h-1 rounded-full bg-zinc-600"></span>
+              <span className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider">
+                Patron Membership
+              </span>
+            </div>
           </div>
 
-          <h2 className="text-2xl sm:text-3xl font-black text-white tracking-tight mb-2">
-            The Executive Media Pass
+          {/* Headline & Mission */}
+          <h2 className="text-2xl sm:text-3xl font-black tracking-tight text-white mb-2 leading-tight">
+            Independent Journalism. <br className="hidden sm:inline" />
+            Zero Compromise.
           </h2>
-          <p className="text-xs sm:text-sm text-zinc-400 leading-relaxed max-w-md mb-6">
-            Step beyond standard reporting. Experience uncompromised journalism, private intelligence rooms, and institutional-grade digests.
+          <p className="text-xs sm:text-sm text-zinc-400 leading-relaxed max-w-lg mb-6">
+            Support fearless, fact-driven Nigerian reporting. Unlock closed-door leadership briefings, executive research intelligence, and an ad-free reading experience.
           </p>
 
-          {/* Bespoke Digital VIP Membership Card Visual */}
-          <div className="relative rounded-2xl p-5 mb-6 overflow-hidden bg-gradient-to-br from-zinc-900 via-zinc-950 to-zinc-900 border border-amber-500/30 shadow-xl">
-            {/* Background Watermark Pattern */}
-            <div className="absolute -right-8 -bottom-8 opacity-10 pointer-events-none">
-              <AchihiLogo size={180} showWordmark={false} />
-            </div>
-
-            <div className="flex items-start justify-between mb-8 relative z-10">
-              <div>
-                <span className="text-[10px] uppercase font-mono tracking-[0.25em] text-amber-400 font-bold block mb-1">
-                  ACHICHI PRIVÉ BLACK CARD
-                </span>
-                <p className="text-xs font-semibold text-zinc-300 tracking-wide">
-                  Verified Executive Patron
-                </p>
-              </div>
-              <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-amber-400/10 border border-amber-400/30 text-amber-300 text-[10px] font-mono font-bold">
-                <CreditCard size={12} />
-                <span>NFC LIVE</span>
-              </div>
-            </div>
-
-            <div className="flex items-end justify-between relative z-10 pt-2 border-t border-white/5">
-              <div>
-                <p className="text-[10px] text-zinc-500 uppercase tracking-widest font-mono">Member ID</p>
-                <p className="text-xs font-mono font-bold text-zinc-300">ACH-2026-8842</p>
-              </div>
-              <div className="text-right">
-                <p className="text-[10px] text-zinc-500 uppercase tracking-widest font-mono">Status</p>
-                <span className="inline-flex items-center gap-1 text-[11px] font-bold text-amber-400">
-                  <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse"></span>
-                  Active Access
-                </span>
-              </div>
-            </div>
-          </div>
-
-          {/* Interactive Billing Selector */}
-          <div className="grid grid-cols-2 gap-3 mb-6 p-1 bg-zinc-900/80 rounded-2xl border border-white/10">
+          {/* Plan Selector — HCI: Distinct choice architecture with purposeful accent for Recommended Tier */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6">
+            {/* Annual Plan (Recommended) */}
             <button
               type="button"
               onClick={() => setBillingCycle('annual')}
-              className={`p-3.5 rounded-xl transition-all text-left relative ${
-                billingCycle === 'annual' 
-                  ? 'bg-zinc-800 border border-amber-500/40 text-white shadow-lg' 
-                  : 'text-zinc-400 hover:text-white'
+              className={`p-4 rounded-2xl border transition-all text-left relative cursor-pointer ${
+                billingCycle === 'annual'
+                  ? 'bg-zinc-900 border-amber-500/80 shadow-md ring-1 ring-amber-500/20'
+                  : 'bg-zinc-900/40 border-zinc-800 hover:border-zinc-700 text-zinc-300'
               }`}
             >
-              <div className="absolute top-2.5 right-2.5">
-                <span className="px-1.5 py-0.5 rounded text-[9px] font-black uppercase bg-amber-400 text-zinc-950 tracking-wider">
+              <div className="flex items-start justify-between mb-2">
+                <span className="text-xs font-bold uppercase tracking-wider text-zinc-300">
+                  Annual Pass
+                </span>
+                {/* Intentional use of yellow accent for highest-value recommendation */}
+                <span className="px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-wider bg-amber-500/15 text-amber-400 border border-amber-500/30">
                   Save 31%
                 </span>
               </div>
-              <p className="text-xs font-bold uppercase tracking-wider text-amber-400 mb-0.5">Annual Pass</p>
-              <div className="flex items-baseline gap-1">
-                <span className="text-lg font-black text-white">₦29,000</span>
-                <span className="text-[11px] text-zinc-400">/year</span>
+
+              <div className="flex items-baseline gap-1 mb-1">
+                <span className="text-2xl font-black text-white">₦2,416</span>
+                <span className="text-xs text-zinc-400">/ month</span>
               </div>
-              <p className="text-[10px] text-zinc-400 mt-1">~₦2,416/mo billed annually</p>
+              <p className="text-[11px] text-zinc-400">
+                ₦29,000 billed annually. Cancel anytime.
+              </p>
+
+              {/* Radio Indicator */}
+              <div className="absolute bottom-4 right-4">
+                <div className={`w-4 h-4 rounded-full border flex items-center justify-center ${
+                  billingCycle === 'annual' ? 'border-amber-400 bg-amber-400' : 'border-zinc-700'
+                }`}>
+                  {billingCycle === 'annual' && <span className="w-1.5 h-1.5 rounded-full bg-zinc-950"></span>}
+                </div>
+              </div>
             </button>
 
+            {/* Monthly Plan */}
             <button
               type="button"
               onClick={() => setBillingCycle('monthly')}
-              className={`p-3.5 rounded-xl transition-all text-left ${
-                billingCycle === 'monthly' 
-                  ? 'bg-zinc-800 border border-amber-500/40 text-white shadow-lg' 
-                  : 'text-zinc-400 hover:text-white'
+              className={`p-4 rounded-2xl border transition-all text-left relative cursor-pointer ${
+                billingCycle === 'monthly'
+                  ? 'bg-zinc-900 border-zinc-400 shadow-md'
+                  : 'bg-zinc-900/40 border-zinc-800 hover:border-zinc-700 text-zinc-300'
               }`}
             >
-              <p className="text-xs font-bold uppercase tracking-wider text-zinc-300 mb-0.5">Monthly Pass</p>
-              <div className="flex items-baseline gap-1">
-                <span className="text-lg font-black text-white">₦3,500</span>
-                <span className="text-[11px] text-zinc-400">/month</span>
+              <div className="flex items-start justify-between mb-2">
+                <span className="text-xs font-bold uppercase tracking-wider text-zinc-300">
+                  Monthly Pass
+                </span>
+                <span className="text-[10px] text-zinc-500 font-mono uppercase">
+                  Flexible
+                </span>
               </div>
-              <p className="text-[10px] text-zinc-400 mt-1">Flexible monthly renewal</p>
+
+              <div className="flex items-baseline gap-1 mb-1">
+                <span className="text-2xl font-black text-white">₦3,500</span>
+                <span className="text-xs text-zinc-400">/ month</span>
+              </div>
+              <p className="text-[11px] text-zinc-400">
+                Billed monthly. Auto-renews.
+              </p>
+
+              {/* Radio Indicator */}
+              <div className="absolute bottom-4 right-4">
+                <div className={`w-4 h-4 rounded-full border flex items-center justify-center ${
+                  billingCycle === 'monthly' ? 'border-zinc-300 bg-zinc-300' : 'border-zinc-700'
+                }`}>
+                  {billingCycle === 'monthly' && <span className="w-1.5 h-1.5 rounded-full bg-zinc-950"></span>}
+                </div>
+              </div>
             </button>
           </div>
 
-          {/* Bespoke Privilege Matrix */}
-          <div className="space-y-3 mb-8">
-            <h4 className="text-xs font-black uppercase tracking-widest text-zinc-400">
-              Patron Privileges Included
-            </h4>
-            
+          {/* Membership Privileges — Clean, scannable editorial list with neutral indicators */}
+          <div className="mb-8 pt-2">
+            <h3 className="text-xs font-bold uppercase tracking-widest text-zinc-400 mb-3">
+              Included in your patron access:
+            </h3>
+
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {[
-                { icon: <Radio size={16} className="text-amber-400" />, title: "Closed-Door Rooms", desc: "Private audio/video Q&As with policymakers & tech founders." },
-                { icon: <Zap size={16} className="text-amber-400" />, title: "Daily AI Briefing", desc: "Institutional summaries of markets & political movements at 6 AM." },
-                { icon: <ShieldCheck size={16} className="text-amber-400" />, title: "Ad-Free Ecosystem", desc: "Zero banner or sponsor interruptions across web & audio." },
-                { icon: <Lock size={16} className="text-amber-400" />, title: "Direct Editorial Pitch", desc: "VIP contact line to authors & exclusive investigative drafts." },
+                { 
+                  icon: <Radio size={15} className="text-zinc-300" />,
+                  title: "Closed-Door Leadership Briefings",
+                  desc: "Join real-time audio and video sessions with editors, economists, and public leaders."
+                },
+                { 
+                  icon: <FileText size={15} className="text-zinc-300" />,
+                  title: "Daily Morning Intelligence",
+                  desc: "Concise 6:00 AM dossiers breaking down markets, political developments, and policy."
+                },
+                { 
+                  icon: <Shield size={15} className="text-zinc-300" />,
+                  title: "Ad-Free Reading Experience",
+                  desc: "Zero commercial ads across web articles, feeds, and live audio radio streams."
+                },
+                { 
+                  icon: <Check size={15} className="text-zinc-300" />,
+                  title: "Verified Reader Badge & Pitching",
+                  desc: "Direct editorial submission queue for opinion columns and verified discussion standing."
+                }
               ].map((privilege, i) => (
-                <div key={i} className="p-3 rounded-xl bg-zinc-900/50 border border-white/5 flex items-start gap-3">
-                  <div className="p-2 rounded-lg bg-amber-400/10 border border-amber-400/20 flex-shrink-0 mt-0.5">
+                <div key={i} className="p-3.5 rounded-xl bg-zinc-900/60 border border-zinc-850 flex items-start gap-3">
+                  <div className="p-2 rounded-lg bg-zinc-800 text-zinc-300 flex-shrink-0 mt-0.5">
                     {privilege.icon}
                   </div>
                   <div>
-                    <h5 className="text-xs font-bold text-white mb-0.5">{privilege.title}</h5>
+                    <h4 className="text-xs font-bold text-zinc-200 mb-0.5">{privilege.title}</h4>
                     <p className="text-[11px] text-zinc-400 leading-snug">{privilege.desc}</p>
                   </div>
                 </div>
@@ -172,32 +190,35 @@ export default function PremiumModal() {
             </div>
           </div>
 
-          {/* CTA & Trust Actions */}
-          <div className="space-y-3">
+          {/* CTA & Trust Actions — Purposeful focal point using ArrowRight instead of generic Sparkles */}
+          <div className="space-y-3 pt-1">
             <button 
               type="button"
               disabled={isProcessing || subscribed}
               onClick={handleSubscribe}
-              className="w-full py-4 px-6 rounded-2xl bg-gradient-to-r from-amber-400 via-yellow-300 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-zinc-950 font-black text-sm uppercase tracking-widest shadow-xl shadow-amber-500/25 transition-all hover:scale-[1.01] active:scale-[0.99] flex items-center justify-center gap-2 cursor-pointer"
+              className="group w-full py-3.5 px-6 rounded-xl bg-amber-500 hover:bg-amber-400 active:bg-amber-600 text-zinc-950 font-black text-sm uppercase tracking-wider transition-all shadow-lg shadow-amber-500/10 flex items-center justify-center gap-2 cursor-pointer"
             >
               {isProcessing ? (
-                <span>Activating Privé Pass...</span>
+                <span>Activating Your Access...</span>
               ) : subscribed ? (
-                <span className="flex items-center gap-1.5"><Check size={18} strokeWidth={3} /> Activated Successfully!</span>
+                <span className="flex items-center gap-2">
+                  <CheckCircle2 size={17} strokeWidth={2.5} className="text-zinc-950" />
+                  Membership Active
+                </span>
               ) : (
                 <span className="flex items-center gap-2">
-                  <Sparkles size={16} />
-                  Join ACHICHI Privé ({billingCycle === 'annual' ? '₦29,000 / Year' : '₦3,500 / Month'})
+                  <span>Continue with {billingCycle === 'annual' ? 'Annual Pass (₦29,000 / Year)' : 'Monthly Pass (₦3,500 / Month)'}</span>
+                  <ArrowRight size={16} strokeWidth={2.5} className="transition-transform group-hover:translate-x-1" />
                 </span>
               )}
             </button>
 
-            <div className="flex items-center justify-center gap-4 text-[11px] text-zinc-500 pt-1">
-              <span>✓ Cancel anytime in 1 tap</span>
+            <div className="flex items-center justify-center gap-3 text-[11px] text-zinc-500 pt-2">
+              <span>Instant activation</span>
               <span>·</span>
-              <span>✓ 14-day refund policy</span>
+              <span>Cancel online in 1 click</span>
               <span>·</span>
-              <span>✓ Instant access</span>
+              <span>14-day refund guarantee</span>
             </div>
           </div>
 

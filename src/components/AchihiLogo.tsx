@@ -67,15 +67,19 @@ export default function AchihiLogo({ size = 40, showWordmark = true, className =
       </svg>
 
       {showWordmark && (
-        <div className="flex flex-col leading-none">
+        <div className="flex flex-col leading-none select-none">
           <span
-            className="font-black tracking-wide text-[#0F2A4A] dark:text-white"
-            style={{ fontSize: size * 0.45, letterSpacing: "0.05em" }}
+            className="font-black tracking-wide text-[var(--text)] transition-colors"
+            style={{ 
+              fontSize: size * 0.45, 
+              letterSpacing: "0.05em",
+              color: "var(--text)"
+            }}
           >
-            ACHIHI
+            ACHICHI
           </span>
           <span
-            className="text-[#1E88C7] font-medium tracking-[0.2em] uppercase"
+            className="text-[#1E88C7] font-bold tracking-[0.2em] uppercase"
             style={{ fontSize: size * 0.2 }}
           >
             MEDIA LIMITED
