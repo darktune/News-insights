@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { Heart, MessageCircle, Share2, Bookmark, Clock, MoreHorizontal, ThumbsDown, Flag } from "lucide-react";
+import { Heart, MessageCircle, Share2, Bookmark, Clock, MoreHorizontal, ThumbsDown, Flag, Repeat } from "lucide-react";
 import { Article } from "@/lib/mock-data";
 import { timeAgo, formatNumber, categoryColor } from "@/lib/utils";
 import { useAppStore } from "@/lib/store";
@@ -15,7 +15,7 @@ interface ArticleCardProps {
 
 /* Icon action button — X style */
 function ActionBtn({
-  onClick, active, activeColor = "#F4212E", count, icon, hoverColor,
+  onClick, active, activeColor = "#F4212E", count, icon, hoverColor, title,
 }: {
   onClick?: (e: React.MouseEvent) => void;
   active?: boolean;
@@ -23,14 +23,18 @@ function ActionBtn({
   count?: number | string;
   icon: React.ReactNode;
   hoverColor?: string;
+  title?: string;
 }) {
   const [hover, setHover] = useState(false);
   const color = active ? activeColor : hover ? (hoverColor ?? "var(--accent)") : "var(--text-tertiary)";
   return (
-    <button onClick={onClick}
+    <button 
+      type="button"
+      onClick={onClick}
+      title={title}
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
-      className="flex items-center gap-1.5 text-xs font-medium transition-colors"
+      className="flex items-center gap-1.5 text-xs font-medium transition-colors cursor-pointer py-1 px-1 rounded-md"
       style={{ color }}>
       {icon}
       {count !== undefined && <span>{count}</span>}
@@ -39,10 +43,16 @@ function ActionBtn({
 }
 
 export default function ArticleCard({ article, variant = "default" }: ArticleCardProps) {
-  const { likedArticles, savedArticles, hiddenArticles, toggleLike, toggleSave, hideArticle } = useAppStore();
+  const { 
+    likedArticles, dislikedArticles, repostedArticles, savedArticles, hiddenArticles, 
+    toggleLike, toggleDislike, toggleRepost, toggleSave, hideArticle, openReportModal 
+  } = useAppStore();
   const [likeCount, setLikeCount] = useState(article.likes);
+  const [repostCount, setRepostCount] = useState(Math.max(1, Math.floor((article.views || 100) * 0.08)));
   const [likeAnim, setLikeAnim] = useState(false);
+  const [dislikeAnim, setDislikeAnim] = useState(false);
   const [shareToast, setShareToast] = useState(false);
+  const [repostToast, setRepostToast] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
 
   // If article is hidden, don't render it in feeds
@@ -51,6 +61,8 @@ export default function ArticleCard({ article, variant = "default" }: ArticleCar
   }
 
   const isLiked = likedArticles.includes(article.id);
+  const isDisliked = dislikedArticles.includes(article.id);
+  const isReposted = repostedArticles.includes(article.id);
   const isSaved = savedArticles.includes(article.id);
 
   const handleLike = (e: React.MouseEvent) => {
@@ -60,6 +72,26 @@ export default function ArticleCard({ article, variant = "default" }: ArticleCar
     setLikeCount((c) => wasLiked ? c - 1 : c + 1);
     setLikeAnim(true);
     setTimeout(() => setLikeAnim(false), 300);
+  };
+
+  const handleDislike = (e: React.MouseEvent) => {
+    e.preventDefault(); e.stopPropagation();
+    const wasLiked = isLiked;
+    toggleDislike(article.id, article.category);
+    if (wasLiked) setLikeCount((c) => Math.max(0, c - 1));
+    setDislikeAnim(true);
+    setTimeout(() => setDislikeAnim(false), 300);
+  };
+
+  const handleRepost = (e: React.MouseEvent) => {
+    e.preventDefault(); e.stopPropagation();
+    const wasReposted = isReposted;
+    toggleRepost(article.id, article.category);
+    setRepostCount((c) => wasReposted ? Math.max(0, c - 1) : c + 1);
+    if (!wasReposted) {
+      setRepostToast(true);
+      setTimeout(() => setRepostToast(false), 2000);
+    }
   };
 
   const handleSave = (e: React.MouseEvent) => {
@@ -209,68 +241,106 @@ export default function ArticleCard({ article, variant = "default" }: ArticleCar
       </Link>
 
       {/* Engagement bar */}
-      <div className="flex items-center justify-between px-4 pb-3 pt-1"
+      <div className="flex items-center justify-between px-3 sm:px-4 pb-3 pt-1 relative z-10"
         style={{ borderTop: "1px solid var(--border)" }}>
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-2.5 sm:gap-3 flex-wrap">
+          {/* Like */}
           <ActionBtn
             onClick={handleLike}
             active={isLiked}
             activeColor="#F4212E"
             hoverColor="#F4212E"
+            title="Like"
             count={formatNumber(likeCount)}
             icon={<Heart size={16} strokeWidth={1.8} className={likeAnim ? "like-animate" : ""}
               fill={isLiked ? "currentColor" : "none"} />}
           />
-          <Link href={`/article/${article.slug}#comments`}>
+          {/* Dislike */}
+          <ActionBtn
+            onClick={handleDislike}
+            active={isDisliked}
+            activeColor="#3B82F6"
+            hoverColor="#3B82F6"
+            title="Dislike"
+            icon={<ThumbsDown size={15} strokeWidth={1.8} className={dislikeAnim ? "scale-125 transition-transform" : ""}
+              fill={isDisliked ? "currentColor" : "none"} />}
+          />
+          {/* Comments */}
+          <Link href={`/article/${article.slug}#comments`} onClick={(e) => e.stopPropagation()}>
             <ActionBtn
               count={formatNumber(article.commentsCount || 0)}
               hoverColor="var(--accent)"
+              title="Comments"
               icon={<MessageCircle size={16} strokeWidth={1.8} />}
             />
           </Link>
+          {/* Free Repost */}
+          <ActionBtn
+            onClick={handleRepost}
+            active={isReposted}
+            activeColor="#10B981"
+            hoverColor="#10B981"
+            title="Repost"
+            count={formatNumber(repostCount)}
+            icon={<Repeat size={16} strokeWidth={1.8} />}
+          />
+          {/* Share */}
           <ActionBtn
             onClick={handleShare}
             hoverColor="var(--accent-green)"
+            title="Share"
             count={formatNumber(Math.floor((article.views || 0) * 0.05))}
             icon={<Share2 size={16} strokeWidth={1.8} />}
           />
           {shareToast && (
-            <span className="text-[11px] px-2 py-0.5 rounded-full font-semibold"
-              style={{ background: "var(--accent)", color: "#fff" }}>
+            <span className="text-[11px] px-2 py-0.5 rounded-full font-semibold bg-[var(--accent)] text-white animate-in fade-in">
               Copied!
             </span>
           )}
+          {repostToast && (
+            <span className="text-[11px] px-2 py-0.5 rounded-full font-semibold bg-emerald-600 text-white animate-in fade-in">
+              Reposted!
+            </span>
+          )}
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1.5 sm:gap-2">
+          {/* Bookmark */}
           <ActionBtn
             onClick={handleSave}
             active={isSaved}
             activeColor="var(--accent)"
             hoverColor="var(--accent)"
+            title="Save"
             icon={<Bookmark size={16} strokeWidth={1.8} fill={isSaved ? "currentColor" : "none"} />}
           />
           {/* Feed Controls */}
           <div className="relative">
             <ActionBtn
               onClick={(e) => { e.preventDefault(); e.stopPropagation(); setMenuOpen(!menuOpen); }}
+              title="More options"
               icon={<MoreHorizontal size={16} strokeWidth={1.8} />}
             />
             {menuOpen && (
               <div 
-                className="absolute right-0 bottom-full mb-2 w-48 glass-panel rounded-xl shadow-lg z-10 overflow-hidden"
+                className="absolute right-0 bottom-full mb-2 w-48 glass-panel bg-[var(--bg)] rounded-2xl shadow-xl z-30 overflow-hidden border border-[var(--border)] animate-in fade-in zoom-in-95 duration-150"
                 onClick={(e) => { e.preventDefault(); e.stopPropagation(); }}
               >
                 <button 
+                  type="button"
                   onClick={() => { hideArticle(article.id, article.category, 'NOT_INTERESTED'); setMenuOpen(false); }}
-                  className="w-full text-left px-4 py-2 text-sm text-[var(--text)] hover:bg-[var(--bg-hover)] transition-colors flex items-center gap-2"
+                  className="w-full text-left px-4 py-2.5 text-sm text-[var(--text)] hover:bg-[var(--bg-hover)] transition-colors flex items-center gap-2 cursor-pointer font-medium"
                 >
-                  <ThumbsDown size={14} /> Not interested
+                  <ThumbsDown size={15} /> Not interested
                 </button>
                 <button 
-                  onClick={() => { hideArticle(article.id, article.category, 'REPORT'); setMenuOpen(false); }}
-                  className="w-full text-left px-4 py-2 text-sm text-red-500 hover:bg-red-500/10 transition-colors flex items-center gap-2"
+                  type="button"
+                  onClick={() => { 
+                    openReportModal({ id: article.id, title: article.title, category: article.category }); 
+                    setMenuOpen(false); 
+                  }}
+                  className="w-full text-left px-4 py-2.5 text-sm text-red-500 hover:bg-red-500/10 transition-colors flex items-center gap-2 cursor-pointer font-bold border-t border-[var(--border)]"
                 >
-                  <Flag size={14} /> Report
+                  <Flag size={15} /> Report story
                 </button>
               </div>
             )}

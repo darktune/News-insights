@@ -8,6 +8,7 @@ import { OnboardingProvider } from "@/components/providers/OnboardingProvider";
 import { OnboardingModal } from "@/components/ui/OnboardingModal";
 import GlobalMediaPlayer from "@/components/media/GlobalMediaPlayer";
 import PremiumModal from "@/components/ui/PremiumModal";
+import ReportModal from "@/components/ui/ReportModal";
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://achihimedia.com'),
@@ -55,6 +56,7 @@ export default function RootLayout({
             <OnboardingModal />
             <GlobalMediaPlayer />
             <PremiumModal />
+            <ReportModal />
           </OnboardingProvider>
         </Providers>
       </body>
